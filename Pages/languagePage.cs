@@ -11,36 +11,38 @@ namespace MarsTest.Pages
 {
     public class LanguagePage
     {
-        public void SuccessfullyAddnewLanguage(IWebDriver driver, string languageToBeAdd, string languageLevelToBeAdd)
+        private const string xPathAddNewButton = "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/thead/tr/th[3]/div";
+        private const string xPathaddLanguage = "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[1]/input";
+        private const string xPathaddLanguageLevel = "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[2]/select";
+        private const string xPathAddButton = "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[3]/input[1]";
+        private const string xPathEditPencilIcon = "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[3]/span[1]";
+        private const string xPathEditLanguage = "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/div[1]/input";
+        private const string xPathEditLanguageLevel = "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/div[2]/select";
+        private const string xPathUpdateButton = "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/span/input[1]";
+        private const string xPathDeletCrossIcon = "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[3]/span[2]";
+
+        public void SuccessfullyAddNewLanguage(IWebDriver driver, string languageToBeAdd, string languageLevelToBeAdd)
         {
 
-            IWebElement addNewButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/thead/tr/th[3]/div"));
+            IWebElement addNewButton = driver.FindElement(By.XPath(xPathAddNewButton));
             addNewButton.Click();
           
-            WaitHelper.WaitToBeVisible(driver, "XPath", "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[1]/input", 30);
+            WaitHelper.WaitToBeVisible(driver, "XPath", xPathaddLanguage, 30);
 
-            IWebElement addLanguage = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[1]/input"));
-            IWebElement addLanguageLevel = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[2]/select"));
+            IWebElement addLanguage = driver.FindElement(By.XPath(xPathaddLanguage));
+            IWebElement addLanguageLevel = driver.FindElement(By.XPath(xPathaddLanguageLevel));
             SelectElement dropdown = new SelectElement(addLanguageLevel);
 
             addLanguage.SendKeys(languageToBeAdd);
             dropdown.SelectByText(languageLevelToBeAdd);
             Assert.That(dropdown.SelectedOption.Text, Is.EqualTo(languageLevelToBeAdd));
 
-            IWebElement addButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[3]/input[1]"));
+            IWebElement addButton = driver.FindElement(By.XPath(xPathAddButton));
             addButton.Click();
 
-            //Assertion
-            WaitHelper.WaitToBeVisible(driver, "ClassName", "ns-box",30);
-            IWebElement toastMessageElement = driver.FindElement(By.ClassName("ns-box"));
-
-           // WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            //IWebElement toastMessageElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.ClassName("ns-box")));
-            
+            //Assertion 
             string expectedMessage = $"{languageToBeAdd} has been added to your languages";
-            string actualMessage = toastMessageElement.Text;
-            Assert.That(actualMessage, Is.EqualTo(expectedMessage));
-
+            AssertionPopupMessage(driver, expectedMessage);
 
             // visible added value
 
@@ -59,87 +61,59 @@ namespace MarsTest.Pages
 
         }
 
-        public void CannotBeAbleToAddnewLanguageWithoutAddingLanguageLevel(IWebDriver driver)
+        private void AssertionPopupMessage(IWebDriver driver, string expectedMessage)
         {
-            string languageToBeAdd = "Spanish";
-
-            IWebElement addNewButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/thead/tr/th[3]/div"));
-            addNewButton.Click();
-            //Assertion
-
-            WaitHelper.WaitToBeClickable(driver, "XPath", "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[1]/input", 30);
-
-            IWebElement addLanguage = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[1]/input"));
-            
-            addLanguage.SendKeys(languageToBeAdd);
-
-            IWebElement addButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[3]/input[1]"));
-            addButton.Click();
-            //thred sleep 
-            WaitHelper.WaitToBeClickable(driver, "XPath", "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[3]/input[1]", 30);
-
-            //Assertion
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            IWebElement toastMessageElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.ClassName("ns-box")));
-            IWebElement toastMessageElement1 = driver.FindElement(By.ClassName("ns-box"));
-
-
-            string expectedMessage = "Please enter language and level";
+            WaitHelper.WaitToBeVisible(driver, "ClassName", "ns-box", 30);
+            IWebElement toastMessageElement = driver.FindElement(By.ClassName("ns-box"));           
             string actualMessage = toastMessageElement.Text;
             Assert.That(actualMessage, Is.EqualTo(expectedMessage));
         }
 
-        public void CannotBeAbleToAddExistingLanguageAndLanguageLevelAsANewLanguage(IWebDriver driver)
+        public void CannotBeAbleToAddnewLanguageWithoutAddingLanguageLevel(IWebDriver driver, string languageToBeAdd)
+
         {
-            string languageToBeAdd = "English";
-            string languageLevelToBeAdd = "Basic";
-
-
-            IWebElement addNewButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/thead/tr/th[3]/div"));
+            IWebElement addNewButton = driver.FindElement(By.XPath(xPathAddNewButton));
             addNewButton.Click();
             //Assertion
 
-            WaitHelper.WaitToBeClickable(driver, "XPath", "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[1]/input", 30);
+            WaitHelper.WaitToBeClickable(driver, "XPath", xPathaddLanguage, 30);
 
-            IWebElement addLanguage = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[1]/input"));
-            IWebElement addLanguageLevel = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[2]/select"));
+            IWebElement addLanguage = driver.FindElement(By.XPath(xPathaddLanguage));
+            
+            addLanguage.SendKeys(languageToBeAdd);
+
+            IWebElement addButton = driver.FindElement(By.XPath(xPathAddButton));
+            addButton.Click();
+            //thred sleep 
+
+            //Assertion
+            string expectedMessage = "Please enter language and level";
+            AssertionPopupMessage(driver, expectedMessage);           
+
+        }
+
+        public void CannotBeAbleToAddExistingLanguageAndLanguageLevelAsANewLanguage(IWebDriver driver, string languageToBeAdd, string languageLevelToBeAdd)
+
+        {   
+            IWebElement addNewButton = driver.FindElement(By.XPath(xPathAddNewButton));
+            //Assertion
+
+            WaitHelper.WaitToBeClickable(driver, "XPath", xPathaddLanguage, 30);
+
+            IWebElement addLanguage = driver.FindElement(By.XPath(xPathaddLanguage));
+            IWebElement addLanguageLevel = driver.FindElement(By.XPath(xPathaddLanguageLevel));
             SelectElement dropdown = new SelectElement(addLanguageLevel);
 
             addLanguage.SendKeys(languageToBeAdd);
             dropdown.SelectByText(languageLevelToBeAdd);
             Assert.That(dropdown.SelectedOption.Text, Is.EqualTo(languageLevelToBeAdd));
 
-            IWebElement addButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[3]/input[1]"));
+            IWebElement addButton = driver.FindElement(By.XPath(xPathAddButton));
             addButton.Click();
-            //thred sleep 
-            WaitHelper.WaitToBeClickable(driver, "XPath", "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/div/div[3]/input[1]", 30);
 
             //Assertion
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            IWebElement toastMessageElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.ClassName("ns-box")));
-            //IWebElement toastMessageElement1 = driver.FindElement(By.ClassName("ns-box"));
-
-
             string expectedMessage = "This language is already exist in your language list";
-            string actualMessage = toastMessageElement.Text;
-            Assert.That(actualMessage, Is.EqualTo(expectedMessage));
-
-
-            // visible added value
-
-            //get the raw
-            var table = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table"));
-            IList<IWebElement> tableBody = table.FindElements(By.TagName("tbody"));
-            IWebElement lastTableBody = tableBody.Last().FindElement(By.TagName("tr"));
-            IList<IWebElement> cells = lastTableBody.FindElements(By.TagName("td"));
-
-            String languageAfterAdd = cells[0].Text;
-            String languageLevelAfterAdd = cells[1].Text;
-
-            //Assertion
-            Assert.That(languageAfterAdd == languageToBeAdd, "Language does not match");
-            Assert.That(languageLevelAfterAdd == languageLevelToBeAdd, "Language level does not match");
-
+            AssertionPopupMessage(driver, expectedMessage);
         }
         /*
         private void GetAddedLanguages(IWebDriver driver)
@@ -155,83 +129,69 @@ namespace MarsTest.Pages
         }
         */
 
-        public void SuccessfullyEditExistingLanguageAndLanguageLevel(IWebDriver driver)
+        public void SuccessfullyEditExistingLanguageAndLanguageLevel(IWebDriver driver, string languageToBeEdit, string languageLevelToBeEdit2)
+
         {
-            string languageToBeEdit = "Sinhala";           
-            string languageLevelToBeEdit2 = "Coversational";
-          
-            IWebElement editPencilIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[3]/span[1]"));
+            IWebElement editPencilIcon = driver.FindElement(By.XPath(xPathEditPencilIcon));
             editPencilIcon.Click();
 
 
-            IWebElement addLanguage = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/div[1]/input"));
-            addLanguage.Clear();
-            addLanguage.SendKeys(languageToBeEdit);
+            IWebElement editLanguage = driver.FindElement(By.XPath(xPathEditLanguage));
+            editLanguage.Clear();
+            editLanguage.SendKeys(languageToBeEdit);
 
-            IWebElement addLanguageLevel = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/div[2]/select"));
-            SelectElement dropdown = new SelectElement(addLanguageLevel);
-           addLanguageLevel.Click();
-           
-            addLanguageLevel.SendKeys(languageLevelToBeEdit2);
-            addLanguageLevel.SendKeys(Keys.Enter);
+            IWebElement editLanguageLevel = driver.FindElement(By.XPath(xPathEditLanguageLevel));
+            SelectElement dropdown = new SelectElement(editLanguageLevel);
+            editLanguageLevel.Click();
+
+            editLanguageLevel.SendKeys(languageLevelToBeEdit2);
+            editLanguageLevel.SendKeys(Keys.Enter);
 
 
-            IWebElement updateButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/span/input[1]"));
-            updateButton.Click();           
-
-            //Assertion
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            IWebElement toastMessageElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.ClassName("ns-box")));        
-
-            string expectedMessage = "Sinhala has been updated to your languages";
-            string actualMessage = toastMessageElement.Text;
-            Assert.That(actualMessage, Is.EqualTo(expectedMessage)); 
-
-        }
-
-        public void SuccsfullyEditOnlyExistingLanguageToANewLanguageWithoutEditLanguageLevel(IWebDriver driver) 
-        {
-            string languageToBeEdit = "Swedish";
-
-            IWebElement editPencilIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[3]/span[1]"));
-            editPencilIcon.Click();
-
-            IWebElement addLanguage = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/div[1]/input"));
-            addLanguage.Clear();
-            addLanguage.SendKeys(languageToBeEdit);
-
-            IWebElement updateButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/span/input[1]"));
+            IWebElement updateButton = driver.FindElement(By.XPath(xPathUpdateButton));
             updateButton.Click();
-            WaitHelper.WaitToBeClickable(driver, "XPath", "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[1]", 30);
 
             //Assertion
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            IWebElement toastMessageElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.ClassName("ns-box")));
-            
             string expectedMessage = $"{languageToBeEdit} has been updated to your languages";
-            string actualMessage = toastMessageElement.Text;
-            Assert.That(actualMessage, Is.EqualTo(expectedMessage));
+            AssertionPopupMessage(driver, expectedMessage);
 
         }
-        /*
-        public void SuccsfullyEditLanguageLevelWithoutEditLanguage(IWebDriver driver)
-        {           
-            string languageLevelToBeEdit2 = "Coversational";          
 
-            IWebElement editPencilIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[3]/span[1]"));
+        public void SuccsfullyEditOnlyExistingLanguageToANewLanguageWithoutEditLanguageLevel(IWebDriver driver, string languageToBeEdit) 
+
+        {
+            IWebElement editPencilIcon = driver.FindElement(By.XPath(xPathEditPencilIcon));
             editPencilIcon.Click();
 
-            IWebElement addLanguageLevel = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/div[2]/select"));
-            SelectElement dropdown = new SelectElement(addLanguageLevel);
-            addLanguageLevel.Click();
+            IWebElement editLanguage = driver.FindElement(By.XPath(xPathEditLanguage));
+            editLanguage.Clear();
+            editLanguage.SendKeys(languageToBeEdit);
 
-            addLanguageLevel.SendKeys(languageLevelToBeEdit2);
-            addLanguageLevel.SendKeys(Keys.Enter);
-
-
-            IWebElement updateButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/span/input[1]"));
+            IWebElement updateButton = driver.FindElement(By.XPath(xPathUpdateButton));
             updateButton.Click();
-            WaitHelper.waitToBeClickable(driver, "XPath", "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[1]", 30);
+        
+            string expectedMessage = $"{languageToBeEdit} has been updated to your languages";
+            AssertionPopupMessage(driver, expectedMessage);
+
+        }
+        
+        public void SuccsfullyEditLanguageLevelWithoutEditLanguage(IWebDriver driver, string languageLevelToBeEdit)
+
+        {   
+            IWebElement editPencilIcon = driver.FindElement(By.XPath(xPathEditPencilIcon));
+            editPencilIcon.Click();
+
+            IWebElement editLanguageLevel = driver.FindElement(By.XPath(xPathEditLanguageLevel));
+            SelectElement dropdown = new SelectElement(editLanguageLevel);
+            editLanguageLevel.Click();
+
+            editLanguageLevel.SendKeys(languageLevelToBeEdit);
+            editLanguageLevel.SendKeys(Keys.Enter);
+
+
+            IWebElement updateButton = driver.FindElement(By.XPath(xPathUpdateButton));
+            updateButton.Click();
+            WaitHelper.WaitToBeVisible(driver, "XPath", "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[1]", 30);
 
             //Assertion
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
@@ -244,49 +204,37 @@ namespace MarsTest.Pages
             Assert.That(actualMessage, Is.EqualTo(expectedMessage));
 
         }
-        */
+        
 
-        public void CannotBeAbleToEditExistngLanguageAndLanguageLevelToAnotherExistingLanguage(IWebDriver driver)
+        public void CannotBeAbleToEditExistngLanguageAndLanguageLevelToAnotherExistingLanguage(IWebDriver driver, string languageToBeEdit, string languageLevelToBeEdit2)
+
         {
-            string languageToBeEdit = "Swedish";
-            string languageLevelToBeEdit2 = "Conversational";
-
-            IWebElement editPencilIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[3]/span[1]"));
-            editPencilIcon.Click();
-
-
-            IWebElement addLanguage = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/div[1]/input"));
-            addLanguage.Clear();
-            addLanguage.SendKeys(languageToBeEdit);
-
-            IWebElement addLanguageLevel = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/div[2]/select"));
-            SelectElement dropdown = new SelectElement(addLanguageLevel);
-            addLanguageLevel.Click();
-
-            addLanguageLevel.SendKeys(languageLevelToBeEdit2);
-            addLanguageLevel.SendKeys(Keys.Enter);
-
-            IWebElement updateButton = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td/div/span/input[1]"));
-            updateButton.Click();
-            WaitHelper.WaitToBeClickable(driver, "XPath", "//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[2]/div/div[2]/div/table/tbody/tr/td[1]", 30);
-
-            //Assertion
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            IWebElement toastMessageElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.ClassName("ns-box")));
             
 
 
+            IWebElement editLanguage = driver.FindElement(By.XPath(xPathEditLanguage));
+            editLanguage.Clear();
+            editLanguage.SendKeys(languageToBeEdit);
+
+            IWebElement editLanguageLevel = driver.FindElement(By.XPath(xPathEditLanguageLevel));
+            SelectElement dropdown = new SelectElement(editLanguageLevel);
+            editLanguageLevel.Click();
+
+            editLanguageLevel.SendKeys(languageLevelToBeEdit2);
+            editLanguageLevel.SendKeys(Keys.Enter);
+
+            IWebElement updateButton = driver.FindElement(By.XPath(xPathUpdateButton));
+            updateButton.Click();
+
             string expectedMessage = "This language is already added to your language list.";
-            string actualMessage = toastMessageElement.Text;
-            Assert.That(actualMessage, Is.EqualTo(expectedMessage));
-
-
+            AssertionPopupMessage(driver, expectedMessage);
         }
 
 
-        public void deleteExistingLanguage(IWebDriver driver) 
+        public void SuccessfullydeleteExistingLanguage(IWebDriver driver) 
         {
-        
+            IWebElement deletCrossIcon = driver.FindElement(By.XPath(xPathDeletCrossIcon));
+            deletCrossIcon.Click();
 
         }
 

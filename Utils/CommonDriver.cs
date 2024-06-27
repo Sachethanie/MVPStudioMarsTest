@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MarsTest.Utils
 {
-    internal class CommonDriver
+    public class CommonDriver
     {
 
         public static IWebDriver driver;

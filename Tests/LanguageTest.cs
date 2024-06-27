@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MarsTest.Tests
 {
-    internal class LanguageTest : CommonDriver
+    public class LanguageTest : CommonDriver
     {    
         
         LoginPage loginPage= new LoginPage();
@@ -43,50 +43,73 @@ namespace MarsTest.Tests
         [Test, Order(1)]
         public void SuccessfullyNavigateProfilePageWithSelectedLanguageTab()
         {
-            Assert.Pass();
-            //Assertion to the profile page navigation
+            string expectedUrl = "http://localhost:5000/Account/Profile#";
+            driver.Navigate().GoToUrl(expectedUrl);
+
+            string actualUrl = driver.Url;
+            Assert.That(actualUrl, Is.EqualTo(expectedUrl), "The URL is not as expected.");
+
         }
 
         [Test, Order(2)]
         [TestCase("English", "Fluent")]
+        [TestCase("Arabic", "Fluent")]
         public void SuccessfullyAddNewLanguage(string language, string level) 
         {
-
-            languagePage.SuccessfullyAddnewLanguage(driver, language, level); 
+            languagePage.SuccessfullyAddNewLanguage(driver, language, level); 
         }
 
         [Test, Order(3)]
-        public void SuccessfullyEditExistingLanguageAndLanguageLevel()
+        [TestCase("Sinhala", "Coversational")]
+        public void SuccessfullyEditExistingLanguageAndLanguageLevel(string language, string level)
         {
-            languagePage.SuccessfullyEditExistingLanguageAndLanguageLevel(driver);
+            languagePage.SuccessfullyEditExistingLanguageAndLanguageLevel(driver, language, level);
         }
 
         [Test, Order(4)]
-        public void SuccsfullyEditOnlyExistingLanguageToANewLanguageWithoutEditLanguageLevel()
+        [TestCase("Swedish")]
+        public void SuccsfullyEditOnlyExistingLanguageToANewLanguageWithoutEditLanguageLevel(string language)
         {
-            languagePage.SuccsfullyEditOnlyExistingLanguageToANewLanguageWithoutEditLanguageLevel(driver);
+            languagePage.SuccsfullyEditOnlyExistingLanguageToANewLanguageWithoutEditLanguageLevel(driver, language);
         }
-        /*
+        
         [Test, Order(5)]
-        public void SuccsfullyEditLanguageLevelWithoutEditLanguage()
+        [TestCase("Basic")]
+        public void SuccsfullyEditLanguageLevelWithoutEditLanguage(string level)
         {
-            languagePage.SuccsfullyEditLanguageLevelWithoutEditLanguage(driver);
+            languagePage.SuccsfullyEditLanguageLevelWithoutEditLanguage(driver, level);
         }
-        */
+        
 
         [Test, Order(6)]
-        public void CannotBeAbleToAddnewLanguageWithoutAddingLanguageLevel()
+        [TestCase("Spanish")]
+        public void CannotBeAbleToAddnewLanguageWithoutAddingLanguageLevel(string language)
         {
-            languagePage.CannotBeAbleToAddnewLanguageWithoutAddingLanguageLevel(driver);
+            languagePage.CannotBeAbleToAddnewLanguageWithoutAddingLanguageLevel(driver , language);
 
         }
-
 
         [Test, Order(7)]
-        public void CannotBeAbleToEditExistngLanguageAndLanguageLevelToAnotherExistingLanguage()
+        [TestCase("Swedish", "Basic")]
+        public void CannotBeAbleToAddExistingLanguageAndLanguageLevelAsANewLanguage(string language, string level)
         {
-            languagePage.CannotBeAbleToEditExistngLanguageAndLanguageLevelToAnotherExistingLanguage(driver);
+            languagePage.CannotBeAbleToAddExistingLanguageAndLanguageLevelAsANewLanguage(driver, language, level);
+
         }
 
+
+        [Test, Order(8)]
+        [TestCase("English", "Fluent")]
+        public void CannotBeAbleToEditExistngLanguageAndLanguageLevelToAnotherExistingLanguage(string language, string level)
+        {
+            languagePage.CannotBeAbleToEditExistngLanguageAndLanguageLevelToAnotherExistingLanguage(driver, language, level);
+        }
+
+
+        [Test, Order(9)]       
+        public void SuccessfullydeleteExistingLanguage()
+        {
+            languagePage.SuccessfullydeleteExistingLanguage(driver);
+        }
     }
 }
